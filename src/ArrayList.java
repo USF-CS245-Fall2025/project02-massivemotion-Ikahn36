@@ -111,4 +111,12 @@ public class ArrayList<T> implements List<T> {
             return arr[nextIndex++];
         }
     }
+
+    /**
+     * Remove all elements from the list.
+     */
+    public void clear() {
+        for (int i = 0; i < size; i++) arr[i] = null;
+        size = 0;
+    }
 }

@@ -37,6 +37,21 @@ public class DummyHeadLinkedList<T> implements List<T> {
     }
 
     /**
+     * Remove all elements from the list.
+     */
+    public void clear() {
+        Node cur = head.next;
+        head.next = null;
+        while (cur != null) {
+            Node n = cur.next;
+            cur.data = null;
+            cur.next = null;
+            cur = n;
+        }
+        size = 0;
+    }
+
+    /**
      * Add element to the end of the list.
      * @param element element to add
      * @return true on success

@@ -2,4 +2,6 @@
 # MassiveMotion
 CS 245 Project 02
 
-"C:\Users\isaia\Downloads\Massive Motion Video.mp4"
+My MassiveMotion.java class reads from the given file and takes all the necessary property values. It uses this to create two lists of the specific type to track all the celestial bodies and one that will be used to track all the remaining ones after each tick. The first body created is the star, which uses the specified star values and also has the isStar boolean value set to true so that the Body will be handled differently later on. From there, on each tick the program will randomly decide if a Body is created on the x and y axis based on the genX and genY probabilites. If one is generated, it will then randomly decide which side it is generated on, and ensure the velocity does not instantly move it off the screen. After, it will use the List's iterator to move all the Bodies and add them to the Survivor list if they have not moved out of the frame. It also will paint the Bodies so that the star is red and the others are black. The time complexity is O(n), as it will iterate through the bodies list both to move all the bodies and paint them. This leads to O(2n), which simplifies as big O(n). The space complexity should also be O(n), as both the bodies and survivor lists can hold n objects in the worst case, leading to O(n).
+
+Example video in Massive Motion Video.mp4

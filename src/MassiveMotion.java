@@ -31,6 +31,9 @@ public class MassiveMotion extends JPanel implements ActionListener {
  
     protected List<Body> bodies;
 
+    // Reusable container for survivors to avoid allocating a new list each tick
+    protected List<Body> survivors;
+
     protected int timerDelay;
 
     protected String listImpl;
@@ -82,6 +85,12 @@ public class MassiveMotion extends JPanel implements ActionListener {
             bodies = new DummyHeadLinkedList<>();
         }
 
+        if (bodies instanceof ArrayList) survivors = new ArrayList<>();
+        else if (bodies instanceof LinkedList) survivors = new LinkedList<>();
+        else if (bodies instanceof DoublyLinkedList) survivors = new DoublyLinkedList<>();
+        else if (bodies instanceof DummyHeadLinkedList) survivors = new DummyHeadLinkedList<>();
+        else survivors = new ArrayList<>();
+
         Body star = new Body(starX, starY, starVx, starVy, starSize, true);
         bodies.add(star);
 
@@ -94,15 +103,12 @@ public class MassiveMotion extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int i = 0; i < bodies.size(); i++) {
-            Body b;
-            try {
-                b = bodies.get(i);
-                g.setColor(b.isStar() ? Color.RED : Color.BLACK);
-                g.fillOval(b.getX(), b.getY(), b.getSize(), b.getSize());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        // Use iterator-based traversal so linked-list implementations are O(n)
+        Iterator<Body> iterator = bodies.iterator();
+        while (iterator.hasNext()) {
+            Body b = iterator.next();
+            g.setColor(b.isStar() ? Color.RED : Color.BLACK);
+            g.fillOval(b.getX(), b.getY(), b.getSize(), b.getSize());
         }
 
         tm.start();
@@ -159,23 +165,19 @@ public class MassiveMotion extends JPanel implements ActionListener {
         }
 
         try {
-            // Build a new list of survivors with the same implementation type
-            List<Body> survivors;
-            if (bodies instanceof ArrayList) survivors = new ArrayList<>();
-            else if (bodies instanceof LinkedList) survivors = new LinkedList<>();
-            else if (bodies instanceof DoublyLinkedList) survivors = new DoublyLinkedList<>();
-            else if (bodies instanceof DummyHeadLinkedList) survivors = new DummyHeadLinkedList<>();
-            else survivors = new ArrayList<>();
+            // Reuse the survivors list to avoid allocation each tick
+            survivors.clear();
 
-            // keep and update the star (index 0) if present
-            if (bodies.size() > 0) {
-                Body star = bodies.get(0);
+            Iterator<Body> iterator = bodies.iterator();
+            if (iterator.hasNext()) {
+                Body star = iterator.next();
                 star.move();
                 survivors.add(star);
             }
 
-            for (int i = 1; i < bodies.size(); i++) {
-                Body b = bodies.get(i);
+            // Update remaining bodies using iterator traversal
+            while (iterator.hasNext()) {
+                Body b = iterator.next();
                 b.move();
                 int bx = b.getX();
                 int by = b.getY();
@@ -185,7 +187,9 @@ public class MassiveMotion extends JPanel implements ActionListener {
                 }
             }
 
+            List<Body> tmp = bodies;
             bodies = survivors;
+            survivors = tmp;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -34,6 +34,21 @@ public class LinkedList<T> implements List<T> {
     }
 
     /**
+     * Remove all elements from the list.
+     */
+    public void clear() {
+        Node curr = head;
+        while (curr != null) {
+            Node next = curr.next;
+            curr.data = null;
+            curr.next = null;
+            curr = next;
+        }
+        head = null;
+        size = 0;
+    }
+
+    /**
      * Add element to the end of the list.
      * @param element element to add
      * @return true on success

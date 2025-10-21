@@ -38,6 +38,22 @@ public class DoublyLinkedList<T> implements List<T>{
     }
 
     /**
+     * Remove all elements from the list.
+     */
+    public void clear() {
+        Node cur = head;
+        while (cur != null) {
+            Node n = cur.next;
+            cur.data = null;
+            cur.next = null;
+            cur.prev = null;
+            cur = n;
+        }
+        head = null;
+        size = 0;
+    }
+
+    /**
      * Add element to the end of the list.
      * @param element element to add
      * @return true on success

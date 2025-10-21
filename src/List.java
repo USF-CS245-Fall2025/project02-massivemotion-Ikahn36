@@ -49,4 +49,9 @@ public interface List<T> {
      * @return iterator
      */
     public Iterator<T> iterator();
+
+    /**
+     * Remove all elements from the list.
+     */
+    public void clear();
 }
